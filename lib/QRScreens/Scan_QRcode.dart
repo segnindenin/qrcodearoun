@@ -20,7 +20,7 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
   List<Map<String, dynamic>> data = [];
 
-  Future<String> fetchOuvrageDetails() async {
+  Future<List<dynamic>> fetchOuvrageDetails() async {
     final apiUrl = Uri.parse(BaseUrl + 'gestion-operations/details-ouvrages');
     final response = await http.post(
       apiUrl,
@@ -35,9 +35,10 @@ class _ScanScreenState extends State<ScanScreen> {
     );
 
     if (response.statusCode == 200) {
-      var data = response.body;
-      print(data);
-      return data;
+      var jsonResponse = json.decode(response.body);
+
+      print("jsonResponse: $jsonResponse['data]");
+      return jsonResponse;
     } else {
       throw Exception('Échec de la requête : ${response.statusCode}');
     }
@@ -94,7 +95,7 @@ class _ScanScreenState extends State<ScanScreen> {
           title: Text('Home Screen'),
         ),
         body: FutureBuilder<List<dynamic>>(
-          future: null, //fetchOuvrageDetails(),
+          future: fetchOuvrageDetails(),
           builder:
               (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {

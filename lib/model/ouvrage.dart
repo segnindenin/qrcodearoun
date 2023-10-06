@@ -1,5 +1,4 @@
 class Ouvrage {
-
   final String transaction;
   final String identifiant;
 
