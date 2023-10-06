@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:qr_scanner/Constants.dart';
@@ -28,11 +30,17 @@ class _ConnexionState extends State<Connexion> {
       });
 
       if (response.statusCode == 200) {
-        // final Map<String, dynamic> data = json.decode(response.body);
-        final String? token = "661|o75IiQfc2pkhSnLLkbcCvIb3Ia4gETqLovaJgEMq";
+        final Map<String, dynamic> data = json.decode(response.body);
+        final String? token = data['data']['token'];
+
         // Connexion réussie, redirigez vers l'écran SplashScreen
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (ctx) => HomeScreen(token: token!)));
+        if (token != null) {
+          // Connexion réussie, redirigez vers l'écran SplashScreen
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (ctx) => HomeScreen(token: token)));
+        } else {
+          print('Token manquant dans la réponse');
+        }
       } else {
         // Gérez les cas d'erreur d'authentification ici
         print('Échec de l\'authentification : ${response.statusCode}');
