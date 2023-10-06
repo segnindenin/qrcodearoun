@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-// import 'package:go_router/go_router.dart';
-// import 'package:go_router/go_router.dart';
-// import 'Home/Home_Screen.dart'; // Assurez-vous que l'import est correct
-import 'Home/Home_Screen.dart'; // Assurez-vous que l'import est correct
-// import 'dart:convert';
-
-
+import 'package:qr_scanner/Constants.dart';
+import 'Home/Home_Screen.dart';
 
 class Connexion extends StatefulWidget {
   const Connexion({Key? key}) : super(key: key);
@@ -15,7 +10,6 @@ class Connexion extends StatefulWidget {
 }
 
 class _ConnexionState extends State<Connexion> {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -25,7 +19,7 @@ class _ConnexionState extends State<Connexion> {
     final String password = _passwordController.text;
 
     // Remplacez l'URL par votre API d'authentification
-    final apiUrl = Uri.parse('http://144.91.103.143:9024/api/v1/login');
+    final apiUrl = Uri.parse(BaseUrl + 'login');
 
     try {
       final response = await http.post(apiUrl, body: {
@@ -37,8 +31,8 @@ class _ConnexionState extends State<Connexion> {
         // final Map<String, dynamic> data = json.decode(response.body);
         final String? token = "661|o75IiQfc2pkhSnLLkbcCvIb3Ia4gETqLovaJgEMq";
         // Connexion réussie, redirigez vers l'écran SplashScreen
-        Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (ctx) => HomeScreen(token: token!)));
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (ctx) => HomeScreen(token: token!)));
       } else {
         // Gérez les cas d'erreur d'authentification ici
         print('Échec de l\'authentification : ${response.statusCode}');
@@ -47,9 +41,8 @@ class _ConnexionState extends State<Connexion> {
       // Gérez les erreurs de connexion réseau ici
       print('Erreur de connexion : $e');
     }
-  } 
+  }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,4 +96,3 @@ class _ConnexionState extends State<Connexion> {
     );
   }
 }
-
