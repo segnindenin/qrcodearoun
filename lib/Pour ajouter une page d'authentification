@@ -1,0 +1,117 @@
+Pour ajouter une page d'authentification à votre application Flutter avant d'afficher l'écran de démarrage, vous pouvez suivre ces étapes :
+
+1. Créez une nouvelle classe pour la page d'authentification, par exemple `AuthenticationPage.dart`.
+
+```dart
+import 'package:flutter/material.dart';
+
+class AuthenticationPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Authentication Page"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 60.0),
+              child: Center(
+                child: Container(
+                  width: 200,
+                  height: 150,
+                  child: Image.asset('asset/images/flutter-logo.png'),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                  hintText: 'Enter valid email id as abc@gmail.com',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 15.0,
+                right: 15.0,
+                top: 15,
+                bottom: 0,
+              ),
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                  hintText: 'Enter secure password',
+                ),
+              ),
+            ),
+            FlatButton(
+              onPressed: () {
+                // TODO: Gérer l'authentification ici
+                // Si l'authentification est réussie, vous pouvez rediriger vers l'écran d'accueil.
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => HomeScreen()), // Remplace la page actuelle
+                );
+              },
+              child: Text(
+                'Login',
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+              color: Colors.blue,
+            ),
+            SizedBox(height: 130),
+            Text('New User? Create Account'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+2. Assurez-vous que vous avez une classe `HomeScreen` existante. Si ce n'est pas le cas, créez-la pour l'écran de démarrage de votre application.
+
+3. Modifiez le code dans `main.dart` pour que votre application démarre d'abord sur la page d'authentification, puis redirige vers l'écran de démarrage après une authentification réussie.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import 'AuthenticationPage.dart'; // Importez votre nouvelle page d'authentification
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AuthenticationPage(), // Démarrez par la page d'authentification
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Home Page"),
+      ),
+      // ... Votre code pour l'écran de démarrage
+    );
+  }
+}
+```
+
+Avec ces modifications, votre application démarrera sur la page d'authentification. Une fois l'authentification réussie (vous devrez gérer cela dans le bouton "Login" de la page d'authentification), elle redirigera l'utilisateur vers l'écran de démarrage `HomeScreen`. Vous devrez ajouter la logique d'authentification appropriée dans la fonction `onPressed` du bouton "Login" dans `AuthenticationPage`.
