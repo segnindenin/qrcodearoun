@@ -61,23 +61,23 @@ class _ScanScreenState extends State<ScanScreen> {
 
   bool isLoaded = false;
 
-  // void load() {
-  //   bannerAddd = BannerAd(
-  //       size: AdSize.banner,
-  //       adUnitId: AddManger.BannerScan,
-  //       listener: BannerAdListener(
-  //         onAdLoaded: (ad) {
-  //           setState(() {
-  //             isLoaded = true;
-  //           });
-  //         },
-  //         onAdFailedToLoad: (ad, error) {
-  //           ad.dispose();
-  //         },
-  //       ),
-  //       request: AdRequest())
-  //     ..load();
-  // }
+  void load() {
+    bannerAddd = BannerAd(
+        size: AdSize.banner,
+        adUnitId: AddManger.BannerScan,
+        listener: BannerAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              isLoaded = true;
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            ad.dispose();
+          },
+        ),
+        request: AdRequest())
+      ..load();
+  }
 
   // @override
   // void initState() {
@@ -85,13 +85,13 @@ class _ScanScreenState extends State<ScanScreen> {
   //   super.initState();
   // }
 
-  // @override
-  // void dispose() {
-  //   if (isLoaded) {
-  //     bannerAddd!.dispose();
-  //   }
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    if (isLoaded) {
+      bannerAddd!.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
