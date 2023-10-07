@@ -18,10 +18,17 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   List<Map<String, dynamic>> data = [];
+  late Future<Ouvrage> futureOuvrage;
   var transaction;
   var identifiant;
 
-  Future<List<dynamic>> fetchOuvrageDetails() async {
+  @override
+  void initState() {
+    super.initState();
+    futureOuvrage = fetchOuvrageDetails();
+  }
+
+  Future<Ouvrage> fetchOuvrageDetails() async {
     final apiUrl = Uri.parse(BaseUrl + 'gestion-operations/details-ouvrages');
     final response = await http.post(
       apiUrl,
@@ -36,12 +43,7 @@ class _ScanScreenState extends State<ScanScreen> {
     );
 
     if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-
-      transaction = jsonResponse['data']['transaction'];
-      identifiant = jsonResponse['data']['identifiant'];
-      // print(jsonResponse);
-      return jsonResponse;
+      return Ouvrage.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Échec de la requête : ${response.statusCode}');
     }
@@ -59,23 +61,23 @@ class _ScanScreenState extends State<ScanScreen> {
 
   bool isLoaded = false;
 
-  void load() {
-    bannerAddd = BannerAd(
-        size: AdSize.banner,
-        adUnitId: AddManger.BannerScan,
-        listener: BannerAdListener(
-          onAdLoaded: (ad) {
-            setState(() {
-              isLoaded = true;
-            });
-          },
-          onAdFailedToLoad: (ad, error) {
-            ad.dispose();
-          },
-        ),
-        request: AdRequest())
-      ..load();
-  }
+  // void load() {
+  //   bannerAddd = BannerAd(
+  //       size: AdSize.banner,
+  //       adUnitId: AddManger.BannerScan,
+  //       listener: BannerAdListener(
+  //         onAdLoaded: (ad) {
+  //           setState(() {
+  //             isLoaded = true;
+  //           });
+  //         },
+  //         onAdFailedToLoad: (ad, error) {
+  //           ad.dispose();
+  //         },
+  //       ),
+  //       request: AdRequest())
+  //     ..load();
+  // }
 
   // @override
   // void initState() {
@@ -83,13 +85,13 @@ class _ScanScreenState extends State<ScanScreen> {
   //   super.initState();
   // }
 
-  @override
-  void dispose() {
-    if (isLoaded) {
-      bannerAddd!.dispose();
-    }
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   if (isLoaded) {
+  //     bannerAddd!.dispose();
+  //   }
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -97,40 +99,34 @@ class _ScanScreenState extends State<ScanScreen> {
       appBar: AppBar(
         title: Text('Home Screen'),
       ),
-      body: Card(
-        clipBehavior: Clip.antiAlias,
-        child: ListTile(
-          leading: Icon(Icons.arrow_drop_down_circle),
-          title: Text('Transac $transaction'),
-          subtitle: Text(
-            'Identifiant $identifiant',
-            style: TextStyle(
-                color: Color.fromARGB(255, 250, 250, 250).withOpacity(0.6)),
-          ),
-        ),
+      body: FutureBuilder<Ouvrage>(
+        future: futureOuvrage,
+        builder: (context, snapshot) {
+          print(snapshot.hasData == true ? 'Oui' : 'non');
+          if (snapshot.hasData) {
+            String transaction = snapshot.data!.data['transaction'];
+            String identifiant = snapshot.data!.data['identifiant'];
+            return Card(
+              clipBehavior: Clip.antiAlias,
+              child: ListTile(
+                leading: Icon(Icons.arrow_drop_down_circle),
+                title: Text(transaction),
+                subtitle: Text(
+                  identifiant,
+                  style: TextStyle(
+                      color:
+                          Color.fromARGB(255, 250, 250, 250).withOpacity(0.6)),
+                ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+          return Center(
+            child: const CircularProgressIndicator(),
+          );
+        },
       ),
     );
-
-    // body: FutureBuilder<List<dynamic>>(
-    //   future: fetchOuvrageDetails(),
-    //   builder:
-    //       (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-    //     if (snapshot.connectionState == ConnectionState.waiting) {
-    //       return CircularProgressIndicator();
-    //     } else if (snapshot.hasError) {
-    //       return Text('Erreur: ${snapshot.error}');
-    //     } else {
-    //       List<dynamic> data = snapshot.data!;
-    //       return ListView.builder(
-    //         itemCount: data.length,
-    //         itemBuilder: (BuildContext context, int index) {
-    //           return ListTile(
-    //             title: Text('Item $index'),
-    //           );
-    //         },
-    //       );
-    //     }
-    //   },
-    // ));
   }
 }

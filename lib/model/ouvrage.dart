@@ -1,16 +1,15 @@
 class Ouvrage {
-  final String transaction;
-  final String identifiant;
+  final bool error;
+  final String message;
+  final Map<String, dynamic> data;
 
-  Ouvrage({
-    required this.transaction,
-    required this.identifiant,
-  });
+  Ouvrage({required this.error, required this.message, required this.data});
 
   factory Ouvrage.fromJson(Map<String, dynamic> json) {
     return Ouvrage(
-      transaction: json['transaction'],
-      identifiant: json['identifiant'],
+      error: json['error'],
+      message: json['message'],
+      data: json['data'],
     );
   }
 }
